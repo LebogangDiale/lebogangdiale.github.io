@@ -14,7 +14,8 @@ section
 }
 .banner
 {
-  background: url(photo.jpg);
+  background: url(backimage.png);
+  background-color: black;
   background-repeat: no-repeat;
   background-size: cover;  
 }
@@ -137,6 +138,7 @@ header.sticky ul li a
 }
 img
 {
+  background-color: #2196b1eb;
   max-width: 100%;
 }
 .services
