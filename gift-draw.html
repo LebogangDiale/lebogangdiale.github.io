@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family gift draw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f5f9; --card: #ffffff; --ink: #1f2a44; --muted: #5d6882;
+    --accent: #e4572e; --line: #d9dfea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+    font-family: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+    display: flex; justify-content: center; padding: 24px 16px;
+  }
+  main { width: 100%; max-width: 460px; }
+  h1 { font-size: 2rem; font-weight: 800; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  select, input {
+    width: 100%; font: inherit; padding: 12px; border-radius: 10px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+  }
+  button {
+    font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 10px;
+    padding: 12px 18px; background: var(--accent); color: #fff;
+  }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.danger { background: #b3261e; }
+  :focus-visible { outline: 3px solid #2a7fff; outline-offset: 2px; }
+  .hidden { display: none !important; }
+  .stage { position: relative; width: 300px; max-width: 100%; margin: 20px auto 8px; aspect-ratio: 1; }
+  #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--ink); }
+  .pointer {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%); z-index: 2;
+    width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent;
+    border-top: 26px solid var(--ink);
+  }
+  .hub {
+    position: absolute; inset: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+    border-radius: 50%; background: var(--ink); z-index: 1;
+  }
+  .row { display: flex; gap: 10px; margin-top: 14px; }
+  .row > * { flex: 1; }
+  #result { text-align: center; }
+  #result .name { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin: 6px 0; }
+  .msg { color: var(--muted); font-size: .95rem; margin-top: 12px; }
+  .msg.err { color: #b3261e; }
+  .badge { display: inline-block; font-size: .8rem; background: #fff3cd; color: #6b5200;
+    padding: 3px 10px; border-radius: 99px; margin-bottom: 14px; }
+  details { margin-top: 20px; }
+  summary { cursor: pointer; color: var(--muted); }
+  .status { color: var(--muted); font-size: .9rem; margin: 10px 0 0; }
+  @media (prefers-reduced-motion: reduce) { #wheel { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Family gift draw</h1>
+  <p class="sub">Pick your name, spin the wheel, and keep who you get a secret.</p>
+
+  <!-- Step 1: who are you -->
+  <section class="card" id="stepWho">
+    <label for="who">Who are you?</label>
+    <select id="who"></select>
+    <div class="row" id="continueRow"><button id="continueBtn">Continue</button></div>
+    <div class="hidden" id="confirmBox">
+      <p class="msg" style="color:var(--ink);font-size:1.05rem;margin-bottom:0">Are you sure you are <strong id="confirmName"></strong>?</p>
+      <p class="msg" style="margin-top:4px">Picking someone else's name would spoil their draw.</p>
+      <div class="row">
+        <button class="ghost" id="noBtn">No, go back</button>
+        <button id="yesBtn">Yes, that's me</button>
+      </div>
+    </div>
+    <p class="msg err hidden" id="whoErr"></p>
+  </section>
+
+  <!-- Step 2: spin -->
+  <section class="card hidden" id="stepSpin">
+    <div class="stage">
+      <div class="pointer"></div>
+      <canvas id="wheel" width="600" height="600"></canvas>
+      <div class="hub"></div>
+    </div>
+    <div class="row">
+      <button class="ghost" id="backBtn">Back</button>
+      <button id="spinBtn">Spin</button>
+    </div>
+    <p class="msg err hidden" id="spinErr"></p>
+  </section>
+
+  <!-- Step 3: result -->
+  <section class="card hidden" id="stepResult">
+    <div id="result">
+      <p>You are buying a gift for</p>
+      <p class="name" id="resultName"></p>
+      <p class="msg">Keep it secret. Your draw is saved, so you can come back and check it anytime.</p>
+    </div>
+    <div class="row"><button class="ghost" id="doneBtn">Done</button></div>
+  </section>
+
+  <!-- Admin -->
+  <details id="admin">
+    <summary>Admin</summary>
+    <div class="card" style="margin-top:10px">
+      <label for="pin">Admin PIN</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off">
+      <div class="row">
+        <button class="danger" id="clearBtn">Clear all draws</button>
+      </div>
+      <p class="status" id="adminStatus"></p>
+    </div>
+  </details>
+</main>
+
+<script type="module">
+/* ============================================================
+   SETTINGS: edit these
+   ============================================================ */
+const FAMILY = ["Alice", "Brian", "Chloe", "David", "Emma", "Frank"]; // everyone taking part
+const ADMIN_PIN = "1234"; // change before real use (casual protection only)
+
+/* ============================================================
+   STORAGE
+   Every method is async so swapping to Firebase later needs no
+   changes to the rest of the page.
+   Shape of the data: { "Alice": "Chloe", ... }  (giver -> receiver)
+   ============================================================ */
+
+/* ---------- FIREBASE STORAGE (shared by everyone) ---------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, runTransaction }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyARGVXjnuB-6XXV0hu8NPdsZIfvDnrUWgY",
+  authDomain: "marumane-polls.firebaseapp.com",
+  projectId: "marumane-polls",
+  storageBucket: "marumane-polls.firebasestorage.app",
+  messagingSenderId: "286904986849",
+  appId: "1:286904986849:web:745b61fdeb1367b3425ba0"
+};
+const db = getFirestore(initializeApp(firebaseConfig));
+const ref = doc(db, "giftDraw", "draws");
+
+const Store = {
+  async getDraws() {
+    const snap = await getDoc(ref);
+    return snap.exists() ? snap.data() : {};
+  },
+  // A transaction stops two people grabbing the same name at the same moment.
+  async saveDraw(giver, receiver) {
+    return runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      const draws = snap.exists() ? snap.data() : {};
+      if (draws[giver]) return false;
+      if (Object.values(draws).includes(receiver)) return false;
+      tx.set(ref, { ...draws, [giver]: receiver });
+      return true;
+    });
+  },
+  async clearDraws() { await setDoc(ref, {}); }
+};
+
+/* ============================================================
+   PAGE LOGIC
+   ============================================================ */
+const $ = (id) => document.getElementById(id);
+const COLORS = ["#e4572e", "#2a9d8f", "#f2b134", "#5b6ee1", "#d1478c", "#6bb04a"];
+let me = null, options = [], displayNames = [], spinning = false;
+
+function show(step) {
+  for (const id of ["stepWho", "stepSpin", "stepResult"]) $(id).classList.toggle("hidden", id !== step);
+}
+
+async function refreshNameList() {
+  const draws = await Store.getDraws();
+  $("who").innerHTML = '<option value="">Choose your name</option>' +
+    FAMILY.map((n) => `<option value="${n}">${n}${draws[n] ? " (already drawn)" : ""}</option>`).join("");
+}
+
+/* Names this person can still draw. Also avoids a dead end where the
+   last person left would only have themselves to draw. */
+async function availableFor(giver) {
+  const draws = await Store.getDraws();
+  const taken = new Set(Object.values(draws));
+  let list = FAMILY.filter((n) => n !== giver && !taken.has(n));
+  const waiting = FAMILY.filter((n) => !draws[n] && n !== giver);
+  if (waiting.length === 1 && list.includes(waiting[0]) && list.length === 2) list = [waiting[0]];
+  return list;
+}
+
+function drawWheel(names) {
+  const c = $("wheel"), ctx = c.getContext("2d"), r = c.width / 2;
+  ctx.clearRect(0, 0, c.width, c.height);
+  const seg = (Math.PI * 2) / names.length;
+  names.forEach((n, i) => {
+    const a0 = -Math.PI / 2 + i * seg;
+    ctx.beginPath(); ctx.moveTo(r, r); ctx.arc(r, r, r, a0, a0 + seg); ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length]; ctx.fill();
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 3; ctx.stroke();
+    ctx.save(); ctx.translate(r, r); ctx.rotate(a0 + seg / 2);
+    const size = Math.max(22, Math.min(36, 320 / names.length));
+    ctx.fillStyle = "#fff"; ctx.font = `bold ${size}px sans-serif`; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    ctx.fillText(n, r - 36, 0, 210);
+    ctx.restore();
+  });
+}
+
+async function openSpin() {
+  $("spinErr").classList.add("hidden");
+  options = await availableFor(me);
+  if (!options.length) {
+    $("spinErr").textContent = "No names left to draw. Ask the admin to clear the draws and start again.";
+    $("spinErr").classList.remove("hidden");
+    $("spinBtn").disabled = true;
+  } else {
+    $("spinBtn").disabled = false;
+  }
+  // The wheel always shows everyone else, so nobody can tell who is already taken.
+  displayNames = FAMILY.filter((n) => n !== me);
+  drawWheel(displayNames);
+  $("wheel").style.transition = "none"; $("wheel").style.transform = "rotate(0deg)";
+  show("stepSpin");
+}
+
+$("continueBtn").addEventListener("click", () => {
+  const name = $("who").value;
+  $("whoErr").classList.add("hidden");
+  if (!name) { $("whoErr").textContent = "Choose your name first."; $("whoErr").classList.remove("hidden"); return; }
+  $("confirmName").textContent = name;
+  $("who").disabled = true;
+  $("continueRow").classList.add("hidden");
+  $("confirmBox").classList.remove("hidden");
+});
+
+function resetConfirm() {
+  $("who").disabled = false;
+  $("confirmBox").classList.add("hidden");
+  $("continueRow").classList.remove("hidden");
+}
+
+$("noBtn").addEventListener("click", resetConfirm);
+
+$("yesBtn").addEventListener("click", async () => {
+  me = $("who").value;
+  resetConfirm();
+  const draws = await Store.getDraws();
+  if (draws[me]) {               // already drew: show the saved result, no re-spin
+    $("resultName").textContent = draws[me];
+    show("stepResult");
+  } else {
+    await openSpin();
+  }
+});
+
+$("backBtn").addEventListener("click", () => show("stepWho"));
+$("doneBtn").addEventListener("click", async () => { me = null; await refreshNameList(); show("stepWho"); });
+
+$("spinBtn").addEventListener("click", async () => {
+  if (spinning) return;
+  spinning = true; $("spinBtn").disabled = true; $("backBtn").disabled = true;
+
+  // Pick quietly from the names that are really still free and save it first.
+  let pick = null;
+  for (let i = 0; i < 5 && !pick; i++) {
+    const left = await availableFor(me);
+    if (!left.length) break;
+    const choice = left[Math.floor(Math.random() * left.length)];
+    if (await Store.saveDraw(me, choice)) pick = choice;
+  }
+  if (!pick) {
+    $("spinErr").textContent = "No names left to draw. Ask the admin to clear the draws and start again.";
+    $("spinErr").classList.remove("hidden");
+    spinning = false; $("backBtn").disabled = false;
+    return;
+  }
+
+  // Spin the full wheel and land on the name that was picked.
+  const segDeg = 360 / displayNames.length;
+  const winner = displayNames.indexOf(pick);
+  const target = 360 * 6 + (360 - (winner + 0.5) * segDeg);
+  const wheel = $("wheel");
+  wheel.style.transition = "transform 4.5s cubic-bezier(.12,.7,.15,1)";
+  wheel.style.transform = `rotate(${target}deg)`;
+  await new Promise((res) => setTimeout(res, 4700));
+
+  spinning = false; $("backBtn").disabled = false;
+  $("resultName").textContent = pick;
+  show("stepResult");
+});
+
+let confirmTimer = null;
+$("clearBtn").addEventListener("click", async () => {
+  const status = $("adminStatus"), btn = $("clearBtn");
+  if ($("pin").value !== ADMIN_PIN) { status.textContent = "Wrong PIN. Try again."; return; }
+
+  // First tap asks for confirmation inline (pop-up boxes are blocked in some browsers).
+  if (!confirmTimer) {
+    btn.textContent = "Tap again to confirm";
+    status.textContent = "This removes every saved draw.";
+    confirmTimer = setTimeout(() => { confirmTimer = null; btn.textContent = "Clear all draws"; status.textContent = ""; }, 5000);
+    return;
+  }
+  clearTimeout(confirmTimer); confirmTimer = null;
+  btn.textContent = "Clear all draws";
+
+  try {
+    await Store.clearDraws();
+    const left = Object.keys(await Store.getDraws()).length;
+    $("pin").value = "";
+    status.textContent = left === 0 ? "Done: all names have been cleared." : "Something went wrong, draws are still saved.";
+    await refreshNameList();
+  } catch (e) {
+    status.textContent = "Could not clear the draws: " + e.message;
+  }
+});
+
+async function boot() {
+  try {
+    await refreshNameList();
+  } catch (e) {
+    $("whoErr").textContent = "Cannot reach the database. Check the Firestore rules and your connection. (" + e.message + ")";
+    $("whoErr").classList.remove("hidden");
+    $("who").innerHTML = '<option value="">Unavailable</option>';
+  }
+  show("stepWho");
+}
+boot();
+</script>
+</body>
+</html>
