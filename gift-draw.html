@@ -39,6 +39,9 @@
   .pointer { position:absolute; top:-12px; left:50%; transform:translateX(-50%); z-index:2; width:0; height:0;
     border-left:14px solid transparent; border-right:14px solid transparent; border-top:26px solid var(--ink); }
   .hub { position:absolute; inset:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:var(--ink); z-index:1; }
+  #count ul { list-style:none; padding:0; margin:8px 0 0; }
+  #count li { display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid var(--line); color:var(--ink); }
+  #count .done { color:#1d7a46; font-weight:600; }
   #result { text-align:center; }
   #result .name { font-size:2.2rem; font-weight:800; color:var(--accent); margin:6px 0; }
   details { margin-top:20px; } summary { cursor:pointer; color:var(--muted); }
@@ -62,10 +65,10 @@
     <div id="formJoin">
       <label for="newName">Your name</label>
       <input id="newName" maxlength="20" autocomplete="off">
-      <label for="newPin">Choose a 4-digit PIN</label>
-      <input id="newPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <label for="newPin">Choose a PIN (at least 4 characters)</label>
+      <input id="newPin" type="password" autocomplete="off">
       <label for="newPin2">Repeat the PIN</label>
-      <input id="newPin2" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <input id="newPin2" type="password" autocomplete="off">
       <div class="row"><button id="joinBtn">Add me to the list</button></div>
       <p class="msg hidden" id="joinMsg"></p>
     </div>
@@ -74,12 +77,18 @@
       <label for="who">Your name</label>
       <select id="who"></select>
       <label for="inPin">Your PIN</label>
-      <input id="inPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <input id="inPin" type="password" autocomplete="off">
+      <div id="resetBox" class="hidden">
+        <label for="resetPin1">New PIN (at least 4 characters)</label>
+        <input id="resetPin1" type="password" autocomplete="off">
+        <label for="resetPin2">Repeat the new PIN</label>
+        <input id="resetPin2" type="password" autocomplete="off">
+      </div>
       <div class="row"><button id="inBtn">Sign in</button></div>
       <p class="msg hidden" id="inMsg"></p>
     </div>
 
-    <p class="msg" id="count"></p>
+    <div class="msg" id="count"></div>
   </section>
 
   <!-- SPIN -->
@@ -113,7 +122,7 @@
     <div class="card" style="margin-top:10px">
       <div id="adminLock">
         <label for="pin">Admin PIN</label>
-        <input id="pin" type="password" inputmode="numeric" autocomplete="off">
+        <input id="pin" type="password" autocomplete="off">
         <div class="row"><button id="adminBtn">Unlock</button></div>
       </div>
       <div id="adminPanel" class="hidden">
@@ -191,7 +200,9 @@ const Store = {
   setOpen: (open) => mutate((st) => { st.open = open; }),
   clearDraws: () => mutate((st) => { st.draws = {}; }),
   resetAll: () => mutate((st) => { st.players = {}; st.draws = {}; st.open = false; }),
-  removePlayer: (n) => mutate((st) => { if (!st.open && !Object.keys(st.draws).length) delete st.players[n]; })
+  removePlayer: (n) => mutate((st) => { if (!st.open && !Object.keys(st.draws).length) delete st.players[n]; }),
+  resetPin: (n) => mutate((st) => { if (n in st.players) st.players[n] = ""; }),     // "" = person must choose a new PIN
+  setPin: (n, hash) => mutate((st) => { if (st.players[n] === "") { st.players[n] = hash; return true; } return false; })
 };
 
 /* ---------- helpers ---------- */
@@ -228,8 +239,10 @@ $("tabIn").onclick = () => tab("in");
 
 function renderStart() {
   const names = Object.keys(state.players);
-  $("who").innerHTML = '<option value="">Choose your name</option>' + names.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
-  $("count").textContent = names.length ? `${names.length} on the list: ${names.join(", ")}` : "Nobody has joined yet.";
+  $("who").innerHTML = '<option value="">Choose your name</option>' + names.map((n) => `<option value="${esc(n)}">${esc(n)}${state.draws[n] ? " (already spun)" : ""}</option>`).join("");
+  $("count").innerHTML = names.length
+    ? `${names.length} on the list:<ul>` + names.map((n) => `<li><span>${esc(n)}</span><span class="${state.draws[n] ? "done" : ""}">${state.draws[n] ? "&#10003; Spun" : "Not spun yet"}</span></li>`).join("") + "</ul>"
+    : "Nobody has joined yet.";
 }
 async function load() { state = await Store.getState(); renderStart(); }
 
@@ -237,7 +250,7 @@ $("joinBtn").onclick = async () => {
   const name = $("newName").value.trim().replace(/\s+/g, " ").slice(0, 20);
   const pin = $("newPin").value, pin2 = $("newPin2").value;
   if (!name) return say("joinMsg", "Enter your name.");
-  if (!/^\d{4}$/.test(pin)) return say("joinMsg", "The PIN must be 4 digits.");
+  if (pin.length < 4) return say("joinMsg", "The PIN must be at least 4 characters.");
   if (pin !== pin2) return say("joinMsg", "The two PINs do not match.");
   try {
     const r = await Store.join(name, await hashPin(name, pin));
@@ -255,13 +268,25 @@ $("inBtn").onclick = async () => {
   if (!name) return say("inMsg", "Choose your name.");
   try {
     state = await Store.getState();
-    if (state.players[name] !== await hashPin(name, pin)) return say("inMsg", "Wrong PIN.");
+    const stored = state.players[name];
+    if (stored === "") {                       // the admin reset this PIN: the person chooses a new one
+      if ($("resetBox").classList.contains("hidden")) {
+        $("resetBox").classList.remove("hidden");
+        return say("inMsg", "Your PIN was reset by the admin. Choose a new PIN below, then tap Sign in.", "ok");
+      }
+      const p1 = $("resetPin1").value, p2 = $("resetPin2").value;
+      if (p1.length < 4) return say("inMsg", "The new PIN must be at least 4 characters.");
+      if (p1 !== p2) return say("inMsg", "The two PINs do not match.");
+      if (!(await Store.setPin(name, await hashPin(name, p1)))) return say("inMsg", "Could not set the PIN. Try again.");
+      $("resetPin1").value = $("resetPin2").value = ""; $("resetBox").classList.add("hidden");
+    } else if (stored !== await hashPin(name, pin)) return say("inMsg", "Wrong PIN.");
     me = name; $("inPin").value = ""; say("inMsg", "");
     if (state.draws[me]) { $("resultName").textContent = state.draws[me]; show("stepResult"); }
     else openSpin();
   } catch (e) { say("inMsg", "Could not sign in: " + e.message); }
 };
 
+$("who").onchange = () => $("resetBox").classList.add("hidden");
 $("doneBtn").onclick = $("backBtn").onclick = async () => { me = null; await load(); show("stepStart"); };
 
 /* ---------- wheel ---------- */
@@ -321,7 +346,7 @@ async function renderAdmin() {
   state = await Store.getState();
   const names = Object.keys(state.players), drawn = Object.keys(state.draws).length, locked = state.open || drawn > 0;
   $("adminInfo").textContent = `${names.length} joined. ${drawn} drawn. Spinning is ${state.open ? "ON" : "OFF"}.`;
-  $("playerList").innerHTML = names.map((n) => `<li><span>${esc(n)}${state.draws[n] ? " (drawn)" : ""}</span>${locked ? "" : `<button class="ghost sm" data-rm="${esc(n)}">Remove</button>`}</li>`).join("");
+  $("playerList").innerHTML = names.map((n) => `<li><span>${esc(n)}${state.draws[n] ? " (drawn)" : ""}${state.players[n] === "" ? " (PIN reset)" : ""}</span><span><button class="ghost sm" data-pin="${esc(n)}">Reset PIN</button>${locked ? "" : ` <button class="ghost sm" data-rm="${esc(n)}">Remove</button>`}</span></li>`).join("");
   $("toggleBtn").textContent = state.open ? "Pause spinning" : "Start spinning";
 }
 async function safely(fn) { try { say("adminMsg", ""); await fn(); } catch (e) { say("adminMsg", "Failed: " + e.message); } }
@@ -337,8 +362,14 @@ $("toggleBtn").onclick = () => safely(async () => {
   say("adminMsg", state.open ? "Spinning is now ON." : "Spinning is paused.", "ok");
 });
 $("playerList").onclick = (e) => {
-  const n = e.target.dataset && e.target.dataset.rm;
-  if (n) safely(async () => { await Store.removePlayer(n); await renderAdmin(); });
+  const btn = e.target, rm = btn.dataset && btn.dataset.rm, pn = btn.dataset && btn.dataset.pin;
+  if (rm) return safely(async () => { await Store.removePlayer(rm); await renderAdmin(); });
+  if (!pn) return;
+  if (!btn.dataset.armed) {                      // two taps to reset a PIN
+    btn.dataset.armed = "1"; btn.textContent = "Tap again";
+    setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "Reset PIN"; }, 5000); return;
+  }
+  safely(async () => { await Store.resetPin(pn); await renderAdmin(); say("adminMsg", `${pn} can now choose a new PIN when they sign in. Their draw is unchanged.`, "ok"); });
 };
 function confirmTap(btn, label, action) {       // two taps, so nothing is wiped by accident
   let timer = null;
