@@ -7,136 +7,135 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f2f5f9; --card: #ffffff; --ink: #1f2a44; --muted: #5d6882;
-    --accent: #e4572e; --line: #d9dfea;
-  }
+  :root { --bg:#f2f5f9; --card:#fff; --ink:#1f2a44; --muted:#5d6882; --accent:#e4572e; --line:#d9dfea; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
-    font-family: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
-    display: flex; justify-content: center; padding: 24px 16px;
-  }
-  main { width: 100%; max-width: 460px; }
-  h1 { font-size: 2rem; font-weight: 800; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 20px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
-  label { display: block; font-weight: 600; margin-bottom: 6px; }
-  select, input {
-    width: 100%; font: inherit; padding: 12px; border-radius: 10px;
-    border: 1px solid var(--line); background: #fff; color: var(--ink);
-  }
-  button {
-    font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 10px;
-    padding: 12px 18px; background: var(--accent); color: #fff;
-  }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  button.danger { background: #b3261e; }
-  :focus-visible { outline: 3px solid #2a7fff; outline-offset: 2px; }
-  .hidden { display: none !important; }
-  .stage { position: relative; width: 300px; max-width: 100%; margin: 20px auto 8px; aspect-ratio: 1; }
-  #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--ink); }
-  .pointer {
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%); z-index: 2;
-    width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent;
-    border-top: 26px solid var(--ink);
-  }
-  .hub {
-    position: absolute; inset: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px;
-    border-radius: 50%; background: var(--ink); z-index: 1;
-  }
-  .row { display: flex; gap: 10px; margin-top: 14px; }
-  .row > * { flex: 1; }
-  #result { text-align: center; }
-  #result .name { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin: 6px 0; }
-  .msg { color: var(--muted); font-size: .95rem; margin-top: 12px; }
-  .msg.err { color: #b3261e; }
-  .badge { display: inline-block; font-size: .8rem; background: #fff3cd; color: #6b5200;
-    padding: 3px 10px; border-radius: 99px; margin-bottom: 14px; }
-  details { margin-top: 20px; }
-  summary { cursor: pointer; color: var(--muted); }
-  .status { color: var(--muted); font-size: .9rem; margin: 10px 0 0; }
-  @media (prefers-reduced-motion: reduce) { #wheel { transition: none !important; } }
+  body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink); display:flex; justify-content:center; padding:24px 16px;
+    font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif; }
+  main { width:100%; max-width:460px; }
+  h1 { font-size:2rem; font-weight:800; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  label { display:block; font-weight:600; margin:12px 0 6px; }
+  label:first-child { margin-top:0; }
+  select, input { width:100%; font:inherit; padding:12px; border-radius:10px; border:1px solid var(--line); background:#fff; color:var(--ink); }
+  button { font:inherit; font-weight:600; cursor:pointer; border:0; border-radius:10px; padding:12px 18px; background:var(--accent); color:#fff; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  button.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); }
+  button.danger { background:#b3261e; }
+  button.sm { padding:4px 10px; font-size:.85rem; }
+  :focus-visible { outline:3px solid #2a7fff; outline-offset:2px; }
+  .hidden { display:none !important; }
+  .tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .tabs button { flex:1; background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .tabs button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .row { display:flex; gap:10px; margin-top:14px; }
+  .row > * { flex:1; }
+  .msg { color:var(--muted); font-size:.95rem; margin:12px 0 0; }
+  .msg.err { color:#b3261e; }
+  .msg.ok { color:#1d7a46; }
+  .notice { background:#fff3cd; color:#6b5200; border-radius:10px; padding:10px 12px; font-size:.95rem; margin-bottom:12px; }
+  .stage { position:relative; width:300px; max-width:100%; margin:12px auto 8px; aspect-ratio:1; }
+  #wheel { width:100%; height:100%; border-radius:50%; border:6px solid var(--ink); }
+  .pointer { position:absolute; top:-12px; left:50%; transform:translateX(-50%); z-index:2; width:0; height:0;
+    border-left:14px solid transparent; border-right:14px solid transparent; border-top:26px solid var(--ink); }
+  .hub { position:absolute; inset:50%; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:var(--ink); z-index:1; }
+  #result { text-align:center; }
+  #result .name { font-size:2.2rem; font-weight:800; color:var(--accent); margin:6px 0; }
+  details { margin-top:20px; } summary { cursor:pointer; color:var(--muted); }
+  ul#playerList { list-style:none; padding:0; margin:10px 0 0; }
+  ul#playerList li { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) { #wheel { transition:none !important; } }
 </style>
 </head>
 <body>
 <main>
   <h1>Family gift draw</h1>
-  <p class="sub">Pick your name, spin the wheel, and keep who you get a secret.</p>
+  <p class="sub">Join the list with a name and PIN. Once everyone is in, you can sign in and spin.</p>
 
-  <!-- Step 1: who are you -->
-  <section class="card" id="stepWho">
-    <label for="who">Who are you?</label>
-    <select id="who"></select>
-    <div class="row" id="continueRow"><button id="continueBtn">Continue</button></div>
-    <div class="hidden" id="confirmBox">
-      <p class="msg" style="color:var(--ink);font-size:1.05rem;margin-bottom:0">Are you sure you are <strong id="confirmName"></strong>?</p>
-      <p class="msg" style="margin-top:4px">Picking someone else's name would spoil their draw.</p>
-      <div class="row">
-        <button class="ghost" id="noBtn">No, go back</button>
-        <button id="yesBtn">Yes, that's me</button>
-      </div>
+  <!-- START: join or sign in -->
+  <section class="card" id="stepStart">
+    <div class="tabs">
+      <button id="tabJoin" class="on">Join the list</button>
+      <button id="tabIn">Sign in</button>
     </div>
-    <p class="msg err hidden" id="whoErr"></p>
+
+    <div id="formJoin">
+      <label for="newName">Your name</label>
+      <input id="newName" maxlength="20" autocomplete="off">
+      <label for="newPin">Choose a 4-digit PIN</label>
+      <input id="newPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <label for="newPin2">Repeat the PIN</label>
+      <input id="newPin2" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <div class="row"><button id="joinBtn">Add me to the list</button></div>
+      <p class="msg hidden" id="joinMsg"></p>
+    </div>
+
+    <div id="formIn" class="hidden">
+      <label for="who">Your name</label>
+      <select id="who"></select>
+      <label for="inPin">Your PIN</label>
+      <input id="inPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <div class="row"><button id="inBtn">Sign in</button></div>
+      <p class="msg hidden" id="inMsg"></p>
+    </div>
+
+    <p class="msg" id="count"></p>
   </section>
 
-  <!-- Step 2: spin -->
+  <!-- SPIN -->
   <section class="card hidden" id="stepSpin">
+    <div class="notice hidden" id="spinInfo"></div>
     <div class="stage">
       <div class="pointer"></div>
       <canvas id="wheel" width="600" height="600"></canvas>
       <div class="hub"></div>
     </div>
     <div class="row">
-      <button class="ghost" id="backBtn">Back</button>
+      <button class="ghost" id="backBtn">Sign out</button>
       <button id="spinBtn">Spin</button>
     </div>
-    <p class="msg err hidden" id="spinErr"></p>
+    <p class="msg err hidden" id="spinMsg"></p>
   </section>
 
-  <!-- Step 3: result -->
+  <!-- RESULT -->
   <section class="card hidden" id="stepResult">
     <div id="result">
       <p>You are buying a gift for</p>
       <p class="name" id="resultName"></p>
-      <p class="msg">Keep it secret. Your draw is saved, so you can come back and check it anytime.</p>
+      <p class="msg">Keep it secret. Sign in again with your PIN anytime to check.</p>
     </div>
-    <div class="row"><button class="ghost" id="doneBtn">Done</button></div>
+    <div class="row"><button class="ghost" id="doneBtn">Sign out</button></div>
   </section>
 
-  <!-- Admin -->
+  <!-- ADMIN -->
   <details id="admin">
     <summary>Admin</summary>
     <div class="card" style="margin-top:10px">
-      <label for="pin">Admin PIN</label>
-      <input id="pin" type="password" inputmode="numeric" autocomplete="off">
-      <div class="row">
-        <button class="danger" id="clearBtn">Clear all draws</button>
+      <div id="adminLock">
+        <label for="pin">Admin PIN</label>
+        <input id="pin" type="password" inputmode="numeric" autocomplete="off">
+        <div class="row"><button id="adminBtn">Unlock</button></div>
       </div>
-      <p class="status" id="adminStatus"></p>
+      <div id="adminPanel" class="hidden">
+        <p class="msg" id="adminInfo" style="margin-top:0"></p>
+        <ul id="playerList"></ul>
+        <div class="row"><button id="toggleBtn">Start spinning</button></div>
+        <div class="row">
+          <button class="danger" id="clearBtn">Clear draws</button>
+          <button class="danger" id="resetBtn">Reset everything</button>
+        </div>
+        <p class="msg" style="font-size:.85rem">Clear draws keeps the names. Reset everything also removes every name and PIN.</p>
+      </div>
+      <p class="msg hidden" id="adminMsg"></p>
     </div>
   </details>
 </main>
 
 <script type="module">
-/* ============================================================
-   SETTINGS: edit these
-   ============================================================ */
-const FAMILY = ["Alice", "Brian", "Chloe", "David", "Emma", "Frank"]; // everyone taking part
-const ADMIN_PIN = "1234"; // change before real use (casual protection only)
-
-/* ============================================================
-   STORAGE
-   Every method is async so swapping to Firebase later needs no
-   changes to the rest of the page.
-   Shape of the data: { "Alice": "Chloe", ... }  (giver -> receiver)
-   ============================================================ */
-
-/* ---------- FIREBASE STORAGE (shared by everyone) ---------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, runTransaction }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const ADMIN_PIN = "1234"; // change before real use (casual protection only)
 
 const firebaseConfig = {
   apiKey: "AIzaSyARGVXjnuB-6XXV0hu8NPdsZIfvDnrUWgY",
@@ -147,57 +146,127 @@ const firebaseConfig = {
   appId: "1:286904986849:web:745b61fdeb1367b3425ba0"
 };
 const db = getFirestore(initializeApp(firebaseConfig));
-const ref = doc(db, "giftDraw", "draws");
+const ref = doc(db, "giftDraw", "state");
 
-const Store = {
-  async getDraws() {
-    const snap = await getDoc(ref);
-    return snap.exists() ? snap.data() : {};
-  },
-  // A transaction stops two people grabbing the same name at the same moment.
-  async saveDraw(giver, receiver) {
-    return runTransaction(db, async (tx) => {
-      const snap = await tx.get(ref);
-      const draws = snap.exists() ? snap.data() : {};
-      if (draws[giver]) return false;
-      if (Object.values(draws).includes(receiver)) return false;
-      tx.set(ref, { ...draws, [giver]: receiver });
-      return true;
-    });
-  },
-  async clearDraws() { await setDoc(ref, {}); }
-};
+/* One document holds everything:
+   { players: { name: pinHash }, open: false, draws: { giver: receiver } } */
+const empty = () => ({ players: {}, open: false, draws: {} });
 
-/* ============================================================
-   PAGE LOGIC
-   ============================================================ */
-const $ = (id) => document.getElementById(id);
-const COLORS = ["#e4572e", "#2a9d8f", "#f2b134", "#5b6ee1", "#d1478c", "#6bb04a"];
-let me = null, options = [], displayNames = [], spinning = false;
-
-function show(step) {
-  for (const id of ["stepWho", "stepSpin", "stepResult"]) $(id).classList.toggle("hidden", id !== step);
+async function mutate(fn) {          // runs safely even if two people save at once
+  return runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const st = snap.exists() ? { ...empty(), ...snap.data() } : empty();
+    const out = fn(st);
+    tx.set(ref, st);
+    return out;
+  });
 }
 
-async function refreshNameList() {
-  const draws = await Store.getDraws();
-  $("who").innerHTML = '<option value="">Choose your name</option>' +
-    FAMILY.map((n) => `<option value="${n}">${n}${draws[n] ? " (already drawn)" : ""}</option>`).join("");
-}
-
-/* Names this person can still draw. Also avoids a dead end where the
-   last person left would only have themselves to draw. */
-async function availableFor(giver) {
-  const draws = await Store.getDraws();
-  const taken = new Set(Object.values(draws));
-  let list = FAMILY.filter((n) => n !== giver && !taken.has(n));
-  const waiting = FAMILY.filter((n) => !draws[n] && n !== giver);
+function availableFor(st, giver) {
+  const names = Object.keys(st.players);
+  const taken = new Set(Object.values(st.draws));
+  let list = names.filter((n) => n !== giver && !taken.has(n));
+  const waiting = names.filter((n) => !st.draws[n] && n !== giver);
+  // avoid a dead end where the last person would only have themselves left
   if (waiting.length === 1 && list.includes(waiting[0]) && list.length === 2) list = [waiting[0]];
   return list;
 }
 
-function drawWheel(names) {
-  const c = $("wheel"), ctx = c.getContext("2d"), r = c.width / 2;
+const Store = {
+  async getState() { const s = await getDoc(ref); return s.exists() ? { ...empty(), ...s.data() } : empty(); },
+  join: (name, hash) => mutate((st) => {
+    if (st.open || Object.keys(st.draws).length) return "closed";
+    if (Object.keys(st.players).some((n) => n.toLowerCase() === name.toLowerCase())) return "taken";
+    st.players[name] = hash; return "ok";
+  }),
+  draw: (giver) => mutate((st) => {
+    if (st.draws[giver]) return { ok: true, receiver: st.draws[giver] };
+    if (!st.open) return { ok: false, reason: "closed" };
+    const left = availableFor(st, giver);
+    if (!left.length) return { ok: false, reason: "none" };
+    const receiver = left[Math.floor(Math.random() * left.length)];
+    st.draws[giver] = receiver;
+    return { ok: true, receiver };
+  }),
+  setOpen: (open) => mutate((st) => { st.open = open; }),
+  clearDraws: () => mutate((st) => { st.draws = {}; }),
+  resetAll: () => mutate((st) => { st.players = {}; st.draws = {}; st.open = false; }),
+  removePlayer: (n) => mutate((st) => { if (!st.open && !Object.keys(st.draws).length) delete st.players[n]; })
+};
+
+/* ---------- helpers ---------- */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const COLORS = ["#e4572e", "#2a9d8f", "#f2b134", "#5b6ee1", "#d1478c", "#6bb04a"];
+let me = null, state = empty(), displayNames = [], spinning = false;
+
+function say(id, msg, kind = "err") {
+  const e = $(id); e.textContent = msg;
+  e.classList.remove("err", "ok"); if (msg) e.classList.add(kind);
+  e.classList.toggle("hidden", !msg);
+}
+function show(step) { for (const id of ["stepStart", "stepSpin", "stepResult"]) $(id).classList.toggle("hidden", id !== step); }
+
+async function hashPin(name, pin) {
+  const s = name.toLowerCase() + ":" + pin + ":giftdraw";
+  if (window.crypto && crypto.subtle) {
+    const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, "0")).join("");
+  }
+  let h = 5381; for (const c of s) h = ((h << 5) + h + c.charCodeAt(0)) | 0; return "f" + h;
+}
+
+/* ---------- start screen ---------- */
+function tab(which) {
+  $("formJoin").classList.toggle("hidden", which !== "join");
+  $("formIn").classList.toggle("hidden", which !== "in");
+  $("tabJoin").classList.toggle("on", which === "join");
+  $("tabIn").classList.toggle("on", which === "in");
+}
+$("tabJoin").onclick = () => tab("join");
+$("tabIn").onclick = () => tab("in");
+
+function renderStart() {
+  const names = Object.keys(state.players);
+  $("who").innerHTML = '<option value="">Choose your name</option>' + names.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  $("count").textContent = names.length ? `${names.length} on the list: ${names.join(", ")}` : "Nobody has joined yet.";
+}
+async function load() { state = await Store.getState(); renderStart(); }
+
+$("joinBtn").onclick = async () => {
+  const name = $("newName").value.trim().replace(/\s+/g, " ").slice(0, 20);
+  const pin = $("newPin").value, pin2 = $("newPin2").value;
+  if (!name) return say("joinMsg", "Enter your name.");
+  if (!/^\d{4}$/.test(pin)) return say("joinMsg", "The PIN must be 4 digits.");
+  if (pin !== pin2) return say("joinMsg", "The two PINs do not match.");
+  try {
+    const r = await Store.join(name, await hashPin(name, pin));
+    if (r === "taken") return say("joinMsg", "That name is already on the list. Use Sign in instead.");
+    if (r === "closed") return say("joinMsg", "The list is closed because the draw has started.");
+    $("newName").value = $("newPin").value = $("newPin2").value = "";
+    say("joinMsg", "");
+    await load(); tab("in"); $("who").value = name;
+    say("inMsg", "You are on the list. Remember your PIN, then sign in when spinning opens.", "ok");
+  } catch (e) { say("joinMsg", "Could not save: " + e.message); }
+};
+
+$("inBtn").onclick = async () => {
+  const name = $("who").value, pin = $("inPin").value;
+  if (!name) return say("inMsg", "Choose your name.");
+  try {
+    state = await Store.getState();
+    if (state.players[name] !== await hashPin(name, pin)) return say("inMsg", "Wrong PIN.");
+    me = name; $("inPin").value = ""; say("inMsg", "");
+    if (state.draws[me]) { $("resultName").textContent = state.draws[me]; show("stepResult"); }
+    else openSpin();
+  } catch (e) { say("inMsg", "Could not sign in: " + e.message); }
+};
+
+$("doneBtn").onclick = $("backBtn").onclick = async () => { me = null; await load(); show("stepStart"); };
+
+/* ---------- wheel ---------- */
+function drawWheel() {
+  const c = $("wheel"), ctx = c.getContext("2d"), r = c.width / 2, names = displayNames.length ? displayNames : ["-"];
   ctx.clearRect(0, 0, c.width, c.height);
   const seg = (Math.PI * 2) / names.length;
   names.forEach((n, i) => {
@@ -206,133 +275,86 @@ function drawWheel(names) {
     ctx.fillStyle = COLORS[i % COLORS.length]; ctx.fill();
     ctx.strokeStyle = "#fff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.save(); ctx.translate(r, r); ctx.rotate(a0 + seg / 2);
-    const size = Math.max(22, Math.min(36, 320 / names.length));
-    ctx.fillStyle = "#fff"; ctx.font = `bold ${size}px sans-serif`; ctx.textAlign = "right"; ctx.textBaseline = "middle";
-    ctx.fillText(n, r - 36, 0, 210);
+    ctx.fillStyle = "#fff"; ctx.font = `bold ${Math.max(22, Math.min(36, 320 / names.length))}px sans-serif`;
+    ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillText(n, r - 36, 0, 210);
     ctx.restore();
   });
 }
-
-async function openSpin() {
-  $("spinErr").classList.add("hidden");
-  options = await availableFor(me);
-  if (!options.length) {
-    $("spinErr").textContent = "No names left to draw. Ask the admin to clear the draws and start again.";
-    $("spinErr").classList.remove("hidden");
-    $("spinBtn").disabled = true;
-  } else {
-    $("spinBtn").disabled = false;
-  }
-  // The wheel always shows everyone else, so nobody can tell who is already taken.
-  displayNames = FAMILY.filter((n) => n !== me);
-  drawWheel(displayNames);
-  $("wheel").style.transition = "none"; $("wheel").style.transform = "rotate(0deg)";
-  show("stepSpin");
+function rebuildWheel() {
+  displayNames = Object.keys(state.players).filter((n) => n !== me);   // everyone else, so nothing is given away
+  drawWheel();
+  const w = $("wheel"); w.style.transition = "none"; w.style.transform = "rotate(0deg)"; void w.offsetWidth;
 }
-
-$("continueBtn").addEventListener("click", () => {
-  const name = $("who").value;
-  $("whoErr").classList.add("hidden");
-  if (!name) { $("whoErr").textContent = "Choose your name first."; $("whoErr").classList.remove("hidden"); return; }
-  $("confirmName").textContent = name;
-  $("who").disabled = true;
-  $("continueRow").classList.add("hidden");
-  $("confirmBox").classList.remove("hidden");
-});
-
-function resetConfirm() {
-  $("who").disabled = false;
-  $("confirmBox").classList.add("hidden");
-  $("continueRow").classList.remove("hidden");
+function updateSpinInfo() {
+  const n = Object.keys(state.players).length, box = $("spinInfo");
+  if (state.open) { box.classList.add("hidden"); return; }
+  box.textContent = `You cannot spin yet. Spinning opens when everyone is on the list and the admin starts it. ${n} ${n === 1 ? "person has" : "people have"} joined so far.`;
+  box.classList.remove("hidden");
 }
+function openSpin() { say("spinMsg", ""); rebuildWheel(); updateSpinInfo(); show("stepSpin"); }
 
-$("noBtn").addEventListener("click", resetConfirm);
-
-$("yesBtn").addEventListener("click", async () => {
-  me = $("who").value;
-  resetConfirm();
-  const draws = await Store.getDraws();
-  if (draws[me]) {               // already drew: show the saved result, no re-spin
-    $("resultName").textContent = draws[me];
-    show("stepResult");
-  } else {
-    await openSpin();
-  }
-});
-
-$("backBtn").addEventListener("click", () => show("stepWho"));
-$("doneBtn").addEventListener("click", async () => { me = null; await refreshNameList(); show("stepWho"); });
-
-$("spinBtn").addEventListener("click", async () => {
+$("spinBtn").onclick = async () => {
   if (spinning) return;
-  spinning = true; $("spinBtn").disabled = true; $("backBtn").disabled = true;
-
-  // Pick quietly from the names that are really still free and save it first.
-  let pick = null;
-  for (let i = 0; i < 5 && !pick; i++) {
-    const left = await availableFor(me);
-    if (!left.length) break;
-    const choice = left[Math.floor(Math.random() * left.length)];
-    if (await Store.saveDraw(me, choice)) pick = choice;
-  }
-  if (!pick) {
-    $("spinErr").textContent = "No names left to draw. Ask the admin to clear the draws and start again.";
-    $("spinErr").classList.remove("hidden");
-    spinning = false; $("backBtn").disabled = false;
-    return;
-  }
-
-  // Spin the full wheel and land on the name that was picked.
-  const segDeg = 360 / displayNames.length;
-  const winner = displayNames.indexOf(pick);
-  const target = 360 * 6 + (360 - (winner + 0.5) * segDeg);
-  const wheel = $("wheel");
-  wheel.style.transition = "transform 4.5s cubic-bezier(.12,.7,.15,1)";
-  wheel.style.transform = `rotate(${target}deg)`;
-  await new Promise((res) => setTimeout(res, 4700));
-
-  spinning = false; $("backBtn").disabled = false;
-  $("resultName").textContent = pick;
-  show("stepResult");
-});
-
-let confirmTimer = null;
-$("clearBtn").addEventListener("click", async () => {
-  const status = $("adminStatus"), btn = $("clearBtn");
-  if ($("pin").value !== ADMIN_PIN) { status.textContent = "Wrong PIN. Try again."; return; }
-
-  // First tap asks for confirmation inline (pop-up boxes are blocked in some browsers).
-  if (!confirmTimer) {
-    btn.textContent = "Tap again to confirm";
-    status.textContent = "This removes every saved draw.";
-    confirmTimer = setTimeout(() => { confirmTimer = null; btn.textContent = "Clear all draws"; status.textContent = ""; }, 5000);
-    return;
-  }
-  clearTimeout(confirmTimer); confirmTimer = null;
-  btn.textContent = "Clear all draws";
-
+  spinning = true; $("spinBtn").disabled = $("backBtn").disabled = true; say("spinMsg", "");
   try {
-    await Store.clearDraws();
-    const left = Object.keys(await Store.getDraws()).length;
-    $("pin").value = "";
-    status.textContent = left === 0 ? "Done: all names have been cleared." : "Something went wrong, draws are still saved.";
-    await refreshNameList();
-  } catch (e) {
-    status.textContent = "Could not clear the draws: " + e.message;
-  }
-});
+    const r = await Store.draw(me);          // the pick is made and saved first, quietly
+    state = await Store.getState();
+    if (!r.ok) {
+      updateSpinInfo();
+      say("spinMsg", r.reason === "closed" ? "You cannot spin yet. Please wait until the admin starts spinning."
+        : "No names are left to draw. Ask the admin to clear the draws.");
+      return;
+    }
+    rebuildWheel();
+    const seg = 360 / displayNames.length, win = Math.max(0, displayNames.indexOf(r.receiver));
+    const w = $("wheel");
+    w.style.transition = "transform 4.5s cubic-bezier(.12,.7,.15,1)";
+    w.style.transform = `rotate(${360 * 6 + (360 - (win + 0.5) * seg)}deg)`;
+    await new Promise((res) => setTimeout(res, 4700));
+    $("resultName").textContent = r.receiver; show("stepResult");
+  } catch (e) { say("spinMsg", "Something went wrong: " + e.message); }
+  finally { spinning = false; $("spinBtn").disabled = $("backBtn").disabled = false; }
+};
 
-async function boot() {
-  try {
-    await refreshNameList();
-  } catch (e) {
-    $("whoErr").textContent = "Cannot reach the database. Check the Firestore rules and your connection. (" + e.message + ")";
-    $("whoErr").classList.remove("hidden");
-    $("who").innerHTML = '<option value="">Unavailable</option>';
-  }
-  show("stepWho");
+/* ---------- admin ---------- */
+async function renderAdmin() {
+  state = await Store.getState();
+  const names = Object.keys(state.players), drawn = Object.keys(state.draws).length, locked = state.open || drawn > 0;
+  $("adminInfo").textContent = `${names.length} joined. ${drawn} drawn. Spinning is ${state.open ? "ON" : "OFF"}.`;
+  $("playerList").innerHTML = names.map((n) => `<li><span>${esc(n)}${state.draws[n] ? " (drawn)" : ""}</span>${locked ? "" : `<button class="ghost sm" data-rm="${esc(n)}">Remove</button>`}</li>`).join("");
+  $("toggleBtn").textContent = state.open ? "Pause spinning" : "Start spinning";
 }
-boot();
+async function safely(fn) { try { say("adminMsg", ""); await fn(); } catch (e) { say("adminMsg", "Failed: " + e.message); } }
+
+$("adminBtn").onclick = () => safely(async () => {
+  if ($("pin").value !== ADMIN_PIN) return say("adminMsg", "Wrong PIN.");
+  $("adminLock").classList.add("hidden"); $("adminPanel").classList.remove("hidden"); await renderAdmin();
+});
+$("toggleBtn").onclick = () => safely(async () => {
+  await renderAdmin();
+  if (!state.open && Object.keys(state.players).length < 3) return say("adminMsg", "At least 3 people must join before spinning can start.");
+  await Store.setOpen(!state.open); await renderAdmin();
+  say("adminMsg", state.open ? "Spinning is now ON." : "Spinning is paused.", "ok");
+});
+$("playerList").onclick = (e) => {
+  const n = e.target.dataset && e.target.dataset.rm;
+  if (n) safely(async () => { await Store.removePlayer(n); await renderAdmin(); });
+};
+function confirmTap(btn, label, action) {       // two taps, so nothing is wiped by accident
+  let timer = null;
+  btn.onclick = () => {
+    if (!timer) { btn.textContent = "Tap again to confirm"; timer = setTimeout(() => { timer = null; btn.textContent = label; }, 5000); return; }
+    clearTimeout(timer); timer = null; btn.textContent = label; safely(action);
+  };
+}
+confirmTap($("clearBtn"), "Clear draws", async () => { await Store.clearDraws(); await renderAdmin(); say("adminMsg", "Draws cleared. Names are still on the list.", "ok"); });
+confirmTap($("resetBtn"), "Reset everything", async () => { await Store.resetAll(); await renderAdmin(); say("adminMsg", "Everything has been reset.", "ok"); });
+
+/* ---------- start ---------- */
+(async () => {
+  try { await load(); }
+  catch (e) { say("joinMsg", "Cannot reach the database. Check the Firestore rules and your connection. (" + e.message + ")"); }
+})();
 </script>
 </body>
 </html>
