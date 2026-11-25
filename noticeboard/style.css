@@ -3,7 +3,8 @@ body{background:#FBF7F0;color:#1B1B18}
 .btn-success,.btn-outline-success{--bs-btn-hover-bg:#17493a;--bs-btn-hover-border-color:#17493a;--bs-btn-active-bg:#17493a}
 .btn-success{--bs-btn-bg:#1F5C46;--bs-btn-border-color:#1F5C46}
 .btn-outline-success{--bs-btn-color:#1F5C46;--bs-btn-border-color:#1F5C46;--bs-btn-hover-color:#fff}
-.nn-nav{background:#17493a}
+.nn-nav{background:#fff;border-bottom:1px solid #E7E0D3}
+.brand-word{font-weight:800;font-size:1.35rem;letter-spacing:-.3px}.n1{color:#0B2650}.n2{color:#3FA11A}
 .logo{width:36px;height:36px;border-radius:10px;background:#E8A33D;color:#1B1B18;font-weight:700;display:grid;place-items:center}
 .hero{background:linear-gradient(135deg,#1F5C46,#2F7A5E 70%,#3C8F6E)}
 .nn-pick{max-width:560px}
