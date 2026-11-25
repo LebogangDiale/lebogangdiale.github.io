@@ -1,1 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1F5C46">
+<title>NeighbourNet (demo)</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo" aria-hidden="true">N</span><div><h1>NeighbourNet</h1><p>Your community noticeboard (demo)</p></div></div>
+  <label class="site">Your site
+    <select id="site"></select>
+  </label>
+</header>
+<nav id="cats" aria-label="Categories"></nav>
+<main id="list" aria-live="polite"></main>
+<button id="newPost" class="fab" type="button">+ Post</button>
+
+<dialog id="dlg">
+  <form id="form">
+    <h2>New post</h2>
+    <label>Category <select id="fCat" required></select></label>
+    <label>Site <select id="fSite" required></select></label>
+    <label>Title <input id="fTitle" maxlength="80" required></label>
+    <label>Details <textarea id="fDetails" maxlength="400" rows="4" required></textarea></label>
+    <label>WhatsApp or phone number (optional) <input id="fContact" type="tel" inputmode="tel" maxlength="20"></label>
+    <p class="hint">Your post shows after the admin approves it.</p>
+    <div class="actions"><button type="button" id="cancel" class="btn2">Cancel</button><button class="btn">Send post</button></div>
+  </form>
+</dialog>
+
+<footer><button id="adminBtn" type="button" class="link">Admin</button></footer>
+<div id="toast" role="status"></div>
+</body>
+</html>
 
