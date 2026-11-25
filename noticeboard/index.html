@@ -5,35 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1F5C46">
 <title>NeighbourNet (demo)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 <script src="app.js" defer></script>
 </head>
 <body>
-<header>
-  <div class="brand"><span class="logo" aria-hidden="true">N</span><div><h1>NeighbourNet</h1><p>Your community noticeboard (demo)</p></div></div>
-  <label class="site">Your site
-    <select id="site"></select>
-  </label>
-</header>
-<nav id="cats" aria-label="Categories"></nav>
-<main id="list" aria-live="polite"></main>
-<button id="newPost" class="fab" type="button">+ Post</button>
+<nav class="navbar nn-nav"><div class="container">
+  <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#"><span class="logo" aria-hidden="true">N</span><span class="fw-bold">NeighbourNet</span></a>
+  <button type="button" class="btn btn-warning fw-semibold js-post">+ Post</button>
+</div></nav>
+
+<header class="hero text-white"><div class="container pt-4 pb-5">
+  <span class="badge rounded-pill text-bg-warning mb-3">Community noticeboard</span>
+  <h1 class="display-5 fw-bold">Your street. Your voice.<br>One board.</h1>
+  <p class="lead mb-4">Report issues, find a room, hire local help and share notices with your neighbours.</p>
+  <div class="row g-2 align-items-end nn-pick">
+    <div class="col-12 col-sm-7"><label for="site" class="form-label small mb-1">Your site</label><select id="site" class="form-select form-select-lg"></select></div>
+    <div class="col-12 col-sm-5"><a href="#board" class="btn btn-light btn-lg w-100">Browse the board</a></div>
+  </div>
+</div></header>
+
+<main class="container nn-main">
+  <section aria-label="Overview"><div class="row g-3" id="stats"></div></section>
+  <div class="row g-4 mt-1" id="board">
+    <div class="col-lg-8"><h2 id="feedTitle" class="h5 fw-bold mb-3"></h2><div id="list" class="d-grid gap-3" aria-live="polite"></div></div>
+    <aside class="col-lg-4 d-grid gap-3 align-content-start">
+      <div class="card nn-card"><div class="card-body"><h3 class="h6 fw-bold">Most "me too" issues</h3><ol id="top" class="list-unstyled mb-0 d-grid gap-2"></ol></div></div>
+      <div class="card text-bg-success"><div class="card-body"><h3 class="h6">Advertise your business</h3><p class="small mb-3">Reach everyone on your site. Plumbers, mechanics, tutors and more.</p><button type="button" class="btn btn-warning fw-semibold" id="adBtn">Post an ad</button></div></div>
+      <div class="card nn-card"><div class="card-body"><h3 class="h6 fw-bold">How it works</h3><ol class="small ps-3 mb-0"><li>Pick your site</li><li>Post an issue, room, ad or notice</li><li>The admin approves it and your neighbours see it</li></ol></div></div>
+    </aside>
+  </div>
+</main>
 
 <dialog id="dlg">
-  <form id="form">
-    <h2>New post</h2>
-    <label>Category <select id="fCat" required></select></label>
-    <label>Site <select id="fSite" required></select></label>
-    <label>Title <input id="fTitle" maxlength="80" required></label>
-    <label>Details <textarea id="fDetails" maxlength="400" rows="4" required></textarea></label>
-    <label>WhatsApp or phone number (optional) <input id="fContact" type="tel" inputmode="tel" maxlength="20"></label>
-    <p class="hint">Your post shows after the admin approves it.</p>
-    <div class="actions"><button type="button" id="cancel" class="btn2">Cancel</button><button class="btn">Send post</button></div>
+  <form id="form" class="d-grid gap-3">
+    <h2 class="h5 fw-bold mb-0">New post</h2>
+    <div><label class="form-label" for="fCat">Category</label><select id="fCat" class="form-select" required></select></div>
+    <div><label class="form-label" for="fSite">Site</label><select id="fSite" class="form-select" required></select></div>
+    <div><label class="form-label" for="fTitle">Title</label><input id="fTitle" class="form-control" maxlength="80" required></div>
+    <div><label class="form-label" for="fDetails">Details</label><textarea id="fDetails" class="form-control" maxlength="400" rows="4" required></textarea></div>
+    <div><label class="form-label" for="fContact">WhatsApp or phone (optional)</label><input id="fContact" class="form-control" type="tel" inputmode="tel" maxlength="20"></div>
+    <p class="small text-secondary mb-0">Your post shows after the admin approves it.</p>
+    <div class="d-flex gap-2 justify-content-end"><button type="button" id="cancel" class="btn btn-outline-secondary">Cancel</button><button class="btn btn-success">Send post</button></div>
   </form>
 </dialog>
 
-<footer><button id="adminBtn" type="button" class="link">Admin</button></footer>
+<footer class="container py-4 text-center small text-secondary">NeighbourNet demo &middot; <button id="adminBtn" type="button" class="btn btn-link btn-sm text-secondary">Admin</button></footer>
 <div id="toast" role="status"></div>
 </body>
 </html>
-
