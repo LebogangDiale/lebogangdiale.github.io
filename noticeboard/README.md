@@ -14,3 +14,4 @@ Static demo: no server, no Firebase yet. Posts are saved in each visitor's own b
 ## Next step
 Replace the load/save functions in `app.js` with Firestore calls so everyone shares the same posts. Do that in a NEW Firebase project, not the gift-draw one.
 
+Note: the page loads Bootstrap from a CDN (cdn.jsdelivr.net), so it needs an internet connection.
