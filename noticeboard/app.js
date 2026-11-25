@@ -2,7 +2,7 @@
 const SITES = ["Extension 1", "Extension 2", "Extension 3", "Extension 4", "Extension 5", "Extension 6"];
 const ADMIN_PIN = "2468"; // DEMO ONLY: anyone can read this in the code. Real security comes with Firebase rules.
 // ======================
-const CATS = [["issue", "Issues"], ["business", "Businesses"], ["room", "Rooms"], ["notice", "Notices"]];
+const CATS = [["issue", "Issues", "#2F6FB5"], ["business", "Businesses", "#E8A33D"], ["room", "Rooms", "#1F5C46"], ["notice", "Notices", "#B5472F"]];
 const KEY = "neighbournet-demo-v1";
 const $ = s => document.querySelector(s);
 const day = 864e5, t0 = Date.now();
@@ -31,54 +31,64 @@ function opts(sel, list, first) {
 }
 
 function card(p) {
-  const c = el("article", "card");
-  const top = el("div", "row");
-  top.append(el("span", "tag", p.site));
-  if (p.status !== "approved") top.append(el("span", "tag pend", "Waiting for approval"));
-  top.append(el("span", "when", ago(p.t)));
-  c.append(top, el("h3", "", p.title), el("p", "", p.details));
-  const acts = el("div", "row");
+  const c = el("article", "card nn-card"), b = el("div", "card-body d-grid gap-2"); c.append(b);
+  const top = el("div", "d-flex flex-wrap gap-2 align-items-center");
+  top.append(el("span", "badge text-bg-success", p.site));
+  if (p.status !== "approved") top.append(el("span", "badge text-bg-warning", "Waiting for approval"));
+  top.append(el("span", "ms-auto small text-secondary", ago(p.t)));
+  b.append(top, el("h3", "h6 fw-bold mb-0", p.title), el("p", "mb-0 text-secondary pre", p.details));
+  const acts = el("div", "d-flex flex-wrap gap-2");
   if (p.contact) {
-    const wa = el("a", "btn2", "WhatsApp"); wa.href = "https://wa.me/" + phone(p.contact); wa.target = "_blank"; wa.rel = "noopener";
-    const call = el("a", "btn2", "Call"); call.href = "tel:+" + phone(p.contact);
+    const wa = el("a", "btn btn-success", "WhatsApp"); wa.href = "https://wa.me/" + phone(p.contact); wa.target = "_blank"; wa.rel = "noopener";
+    const call = el("a", "btn btn-outline-success", "Call"); call.href = "tel:+" + phone(p.contact);
     acts.append(wa, call);
   }
   if (p.cat === "issue") {
-    const done = meToo.includes(p.id);
-    const m = el("button", "btn2", "Me too · " + (p.me || 0)); m.type = "button"; m.disabled = done;
+    const m = el("button", "btn btn-outline-success", "Me too \u00b7 " + (p.me || 0)); m.type = "button"; m.disabled = meToo.includes(p.id);
     m.onclick = () => { p.me = (p.me || 0) + 1; meToo.push(p.id); write(KEY + ":me", meToo); save(); render(); };
     acts.append(m);
   }
-  const sh = el("a", "btn2", "Share");
+  const sh = el("a", "btn btn-outline-secondary", "Share");
   sh.href = "https://wa.me/?text=" + encodeURIComponent(p.title + " (" + p.site + ") " + location.href.split("#")[0]);
   sh.target = "_blank"; sh.rel = "noopener"; acts.append(sh);
   if (admin) {
-    if (p.status !== "approved") { const a = el("button", "btn", "Approve"); a.type = "button"; a.onclick = () => { p.status = "approved"; save(); render(); }; acts.append(a); }
-    const r = el("button", "btn2 bad", "Remove"); r.type = "button";
+    if (p.status !== "approved") { const a = el("button", "btn btn-success", "Approve"); a.type = "button"; a.onclick = () => { p.status = "approved"; save(); render(); }; acts.append(a); }
+    const r = el("button", "btn btn-outline-danger", "Remove"); r.type = "button";
     r.onclick = () => { if (confirm("Remove this post?")) { posts = posts.filter(x => x.id !== p.id); save(); render(); } };
     acts.append(r);
   }
-  c.append(acts);
+  b.append(acts);
   return c;
 }
 
 function render() {
-  const nav = $("#cats"); nav.textContent = "";
-  CATS.forEach(([id, name]) => {
-    const b = el("button", "chip", name); b.type = "button"; b.setAttribute("aria-pressed", id === cat);
-    b.onclick = () => { cat = id; render(); }; nav.append(b);
+  const here = posts.filter(p => !site || p.site === site), ok = here.filter(p => p.status === "approved");
+  const stats = $("#stats"); stats.textContent = "";
+  CATS.forEach(([id, name, col]) => {
+    const w = el("div", "col-6 col-md-3"), b = el("button", "stat");
+    b.type = "button"; b.style.setProperty("--c", col); b.setAttribute("aria-pressed", id === cat);
+    b.append(el("b", "", String(ok.filter(p => p.cat === id).length)), el("span", "", name));
+    b.onclick = () => { cat = id; render(); }; w.append(b); stats.append(w);
   });
-  const list = posts.filter(p => p.cat === cat && (!site || p.site === site) && (admin || p.status === "approved"));
+  const name = CATS.find(c => c[0] === cat)[1];
+  $("#feedTitle").textContent = name + " in " + (site || "all sites");
+  const list = here.filter(p => p.cat === cat && (admin || p.status === "approved"));
   const main = $("#list"); main.textContent = "";
-  if (!list.length) main.append(el("p", "empty", "Nothing here yet. Be the first to post."));
+  if (!list.length) main.append(el("p", "text-center text-secondary py-4", "Nothing here yet. Be the first to post."));
   list.forEach(p => main.append(card(p)));
+  const top = $("#top"); top.textContent = "";
+  const hot = ok.filter(p => p.cat === "issue" && p.me > 0).sort((a, b) => b.me - a.me).slice(0, 3);
+  if (!hot.length) top.append(el("li", "small text-secondary", "No issues yet. Tap Me too on an issue you share."));
+  hot.forEach(p => { const li = el("li", "tops"), b = el("button", "", p.me + " neighbours: " + p.title); b.type = "button"; b.onclick = () => { cat = "issue"; render(); }; li.append(b); top.append(li); });
   $("#adminBtn").textContent = admin ? "Leave admin mode" : "Admin";
 }
 
 opts($("#site"), SITES, "All sites"); $("#site").value = site;
 opts($("#fSite"), SITES); opts($("#fCat"), CATS);
 $("#site").onchange = e => { site = e.target.value; write(KEY + ":site", site); render(); };
-$("#newPost").onclick = () => { $("#fCat").value = cat; if (site) $("#fSite").value = site; $("#dlg").showModal(); };
+function openForm(c) { $("#fCat").value = c; if (site) $("#fSite").value = site; $("#dlg").showModal(); }
+document.querySelectorAll(".js-post").forEach(b => b.onclick = () => openForm(cat));
+$("#adBtn").onclick = () => openForm("business");
 $("#cancel").onclick = () => $("#dlg").close();
 $("#form").onsubmit = e => {
   e.preventDefault();
@@ -92,4 +102,3 @@ $("#adminBtn").onclick = () => {
   if (pin === ADMIN_PIN) { admin = true; render(); toast("Admin mode on"); } else toast("Wrong PIN");
 };
 render();
-
