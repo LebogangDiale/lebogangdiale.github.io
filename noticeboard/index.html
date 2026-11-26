@@ -3,14 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeighbourNet | Free community noticeboard (demo)</title>
+<meta name="description" content="NeighbourNet is a free community noticeboard for South African neighbourhoods. Report water and power problems, find rooms to rent, hire local tradesmen and share notices.">
 <meta name="theme-color" content="#0B2650">
-<title>NeighbourNet (demo)</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<!-- IMPORTANT: replace https://YOUR-USERNAME.github.io/YOUR-REPO/noticeboard/ below with your real address (3 places) so WhatsApp and Google show the preview picture. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NeighbourNet">
+<meta property="og:title" content="NeighbourNet: See it. Report it. Build a better community.">
+<meta property="og:description" content="Free community noticeboard for South African neighbourhoods: issues, rooms to rent, local businesses and notices.">
+<meta property="og:url" content="https://YOUR-USERNAME.github.io/YOUR-REPO/noticeboard/">
+<meta property="og:image" content="https://YOUR-USERNAME.github.io/YOUR-REPO/noticeboard/images/og-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="logo-mark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"NeighbourNet","description":"Free community noticeboard for South African neighbourhoods.","inLanguage":"en-ZA"}</script>
+<script>try{var t=localStorage.getItem("neighbournet-demo-v1:theme");t=t?JSON.parse(t):(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-bs-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 <script src="app.js" defer></script>
 </head>
 <body>
+<a class="visually-hidden-focusable btn btn-warning m-2" href="#board">Skip to the board</a>
 <nav class="navbar nn-nav sticky-top"><div class="container">
   <a class="navbar-brand d-flex align-items-center gap-2" href="#"><img src="logo-mark.svg" alt="" width="56" height="37"><span class="brand-word"><span class="n1">Neighbour</span><span class="n2">Net</span></span></a>
   <div class="d-flex align-items-center gap-2"><span id="navUser" class="d-flex align-items-center gap-2"></span><button type="button" class="btn btn-warning fw-semibold js-post">+ Post</button></div>
@@ -18,7 +34,7 @@
 
 <header class="hero text-white"><div class="container pt-4 pb-5"><div class="row align-items-center g-4">
   <div class="col-lg-7">
-    <span class="badge rounded-pill text-bg-warning mb-3">See it. Report it. Build a better community.</span>
+    <div class="d-flex flex-wrap gap-2 mb-3"><span class="badge rounded-pill text-bg-warning">See it. Report it. Build a better community.</span><span id="livePill" class="badge rounded-pill bg-light text-dark live"></span></div>
     <h1 class="display-4 fw-bold">Your street. Your voice. <span class="accent">One board.</span></h1>
     <p class="lead mb-4">Report issues, find a room, hire local help and share notices with your neighbours.</p>
     <div class="row g-2 align-items-end nn-pick">
@@ -28,16 +44,29 @@
   </div>
   <div class="col-lg-5 d-none d-lg-block"><div class="hero-card"><img src="logo-mark.svg" alt="" class="w-100"></div></div>
 </div></div>
-<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34Q360 0 720 30T1440 26V60H0Z" fill="#F4F7FB"/></svg>
+<svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34Q360 0 720 30T1440 26V60H0Z" fill="currentColor"/></svg>
 </header>
+
+<noscript><div class="alert alert-warning m-3">NeighbourNet needs JavaScript to show the noticeboard. Please turn it on in your browser.</div></noscript>
 
 <main class="container nn-main">
   <section aria-label="Overview"><div class="row g-3" id="stats"></div></section>
+
+  <section class="row g-3 mt-2" aria-label="Why NeighbourNet">
+    <div class="col-md-4"><div class="trust"><span class="ico" data-icon="users" aria-hidden="true"></span><div><h3>Free for residents</h3><p>Join, post and respond at no cost.</p></div></div></div>
+    <div class="col-md-4"><div class="trust"><span class="ico" data-icon="shield" aria-hidden="true"></span><div><h3>Checked by admins</h3><p>Every post is approved before neighbours see it.</p></div></div></div>
+    <div class="col-md-4"><div class="trust"><span class="ico" data-icon="chat" aria-hidden="true"></span><div><h3>Works with WhatsApp</h3><p>Contact and share with one tap.</p></div></div></div>
+  </section>
+
   <div class="row g-4 mt-1" id="board">
-    <div class="col-lg-8"><h2 id="feedTitle" class="h4 fw-bold mb-3"></h2><div id="list" class="d-grid gap-3" aria-live="polite"></div></div>
+    <div class="col-lg-8">
+      <h2 id="feedTitle" class="h4 fw-bold mb-3"></h2>
+      <input id="q" type="search" class="form-control mb-3" placeholder="Search this list..." aria-label="Search posts" autocomplete="off">
+      <div id="list" class="d-grid gap-3" aria-live="polite"></div>
+    </div>
     <aside class="col-lg-4 d-grid gap-3 align-content-start">
       <div class="card nn-card"><div class="card-body"><h3 class="h6 fw-bold">Most "me too" issues</h3><ol id="top" class="list-unstyled mb-0 d-grid gap-2"></ol></div></div>
-      <div class="card ad-card"><div class="card-body"><h3 class="h5 fw-bold">Own a business?</h3><p class="mb-3">Reach everyone on your site: plumbers, mechanics, tutors and more.</p><button type="button" class="btn btn-warning fw-semibold" id="adBtn">Post an ad</button></div></div>
+      <div class="card ad-card"><div class="card-body"><h3 class="h5 fw-bold">Own a business?</h3><p class="mb-3">Reach everyone on your site: plumbers, mechanics, tutors and more.</p><button type="button" class="btn btn-warning fw-semibold js-ad" id="adBtn">Post an ad</button></div></div>
     </aside>
   </div>
 
@@ -56,6 +85,11 @@
       <div class="col-md-4"><div class="card nn-card h-100"><div class="card-body"><div class="step">2</div><h3 class="h6 fw-bold">Post what you see</h3><p class="small text-secondary mb-0">Report a problem, offer a room, advertise a service or share a notice.</p></div></div></div>
       <div class="col-md-4"><div class="card nn-card h-100"><div class="card-body"><div class="step">3</div><h3 class="h6 fw-bold">Neighbours respond</h3><p class="small text-secondary mb-0">The admin approves posts. People back issues with "Me too" and contact you on WhatsApp.</p></div></div></div>
     </div>
+  </section>
+
+  <section class="cta text-center text-white mt-5" aria-labelledby="go"><h2 id="go" class="h3 fw-bold">Be the first on your street</h2>
+    <p class="mb-4">Pick your area and post a notice, an issue or a room in under a minute.</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center"><button type="button" class="btn btn-warning btn-lg fw-semibold js-post">Post something</button><button type="button" class="btn btn-light btn-lg js-loc">Choose your area</button></div>
   </section>
 </main>
 
@@ -98,7 +132,15 @@
   </form>
 </dialog>
 
-<footer class="nn-foot"><div class="container py-4 d-flex flex-wrap gap-2 justify-content-between align-items-center small"><span>NeighbourNet demo &middot; See it. Report it. Build a better community.</span><button id="adminBtn" type="button" class="btn btn-link btn-sm text-white-50">Admin</button></div></footer>
+<footer class="nn-foot"><div class="container py-4">
+  <div class="row g-4">
+    <div class="col-md-5"><div class="d-flex align-items-center gap-2 mb-2"><span class="badge-logo"><img src="logo-mark.svg" alt="" width="48" height="32"></span><b class="fs-5">NeighbourNet</b></div><p class="small mb-0 text-white-50">See it. Report it. Build a better community.</p></div>
+    <div class="col-6 col-md-3"><h2 class="h6">Explore</h2><ul class="list-unstyled small mb-0 d-grid gap-1"><li><a href="#board">The board</a></li><li><a href="#see">Report what you see</a></li><li><a href="#how">How it works</a></li></ul></div>
+    <div class="col-6 col-md-4"><h2 class="h6">For businesses</h2><p class="small text-white-50 mb-2">Reach your whole area.</p><button type="button" class="btn btn-warning btn-sm js-ad">Post an ad</button></div>
+  </div>
+  <hr class="border-secondary">
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center small"><span class="text-white-50">NeighbourNet demo. Made for South African communities.</span><span><button id="themeBtn" type="button" class="btn btn-link btn-sm text-white-50">Dark mode</button><button id="adminBtn" type="button" class="btn btn-link btn-sm text-white-50">Admin</button></span></div>
+</div></footer>
 <div id="toast" role="status"></div>
 </body>
 </html>
