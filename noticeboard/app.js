@@ -105,6 +105,7 @@ opts($("#fSite"), SITES); opts($("#fCat"), CATS);
 $("#site").onchange = e => { site = e.target.value; write(KEY + ":site", site); render(); };
 function openForm(c) { requireUser(() => { $("#fCat").value = c; if (site) $("#fSite").value = site; if (!$("#fContact").value) $("#fContact").value = user().phone; $("#dlg").showModal(); }); }
 document.querySelectorAll(".js-post").forEach(b => b.onclick = () => openForm(cat));
+document.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { cat = b.dataset.cat; render(); $("#board").scrollIntoView(); });
 $("#adBtn").onclick = () => openForm("business");
 $("#cancel").onclick = () => $("#dlg").close();
 $("#tabIn").onclick = () => setMode("in"); $("#tabNew").onclick = () => setMode("new");
