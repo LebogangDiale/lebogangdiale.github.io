@@ -26,10 +26,26 @@ Files in `images/` came from Unsplash (free licence). Keep the Unsplash link and
 Do not call the street photo "Kagiso" unless it really is.
 
 ## Locations
-- `locations/index.json` lists the 9 provinces. Each province has its own file, for example `locations/gauteng.json`, which holds everything inside it. The page loads a province's file only when someone picks that province.
-- To add places, edit only that province's file. Keep every `id` unique and keep the same shape as the places already there (`id`, `name`, optional `kids` label and `c` list of children).
-- The list was written from memory. Check municipality names against the Municipal Demarcation Board before going live. Towns and extensions in Gauteng are samples.
+Every province, municipality, metro, city and town has its own folder with an `index.json` listing what is inside it. Extensions and sections are the smallest unit, so they are just lines in their town's list.
+
+```
+locations/
+  index.json                          the 9 provinces
+  gauteng/
+    index.json                        Gauteng's municipalities
+    city-of-johannesburg/index.json   a metro: add its suburbs and townships here
+    west-rand-district/
+      index.json
+      mogale-city/
+        index.json
+        kagiso/index.json             Kagiso's extensions
+        krugersdorp/index.json
+```
+- A place with a `"dir"` value has its own folder inside the current one. The page loads that folder only when someone picks the place.
+- A folder with `{"c": []}` is an empty placeholder. If the file is missing, the page treats the place as empty and carries on, so you can create placeholders as you need them.
+- To add places inside a place, put them in that place's `index.json`. To give one of those new places its own folder, make a folder named like it (lowercase, dashes) with an `index.json`, and add `"dir": "that-name/"` and a `"kids"` label (what to call the places inside it) to its entry.
+- Never change a place's `id` after people have posted with it. Names can change.
+- The lists were written from memory. Check municipality names against the Municipal Demarcation Board before going live. Towns and extensions in Gauteng are samples.
 - The page only loads these files when opened from the web (GitHub Pages), not by double-clicking `index.html`.
 - In admin mode, "Add an area here" saves new areas in this browser only (demo). With Firebase they will be shared.
 - Posts store the full chosen path, so picking "Gauteng" shows everything in Gauteng, and picking "Kagiso" shows only Kagiso.
-- If a province file gets above about 200 KB, split it again by municipality.
