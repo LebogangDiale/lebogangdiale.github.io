@@ -1,1 +1,59 @@
-
+{
+ "note": "Provinces and municipalities from the 2018 demarcation list, written from memory: please check against the Municipal Demarcation Board. Towns and extensions are samples. Admin-added areas are saved separately. One file per province: add places to that province's file.",
+ "tree": [
+  {
+   "id": "eastern-cape",
+   "name": "Eastern Cape",
+   "kids": "Municipality",
+   "file": "eastern-cape.json"
+  },
+  {
+   "id": "free-state",
+   "name": "Free State",
+   "kids": "Municipality",
+   "file": "free-state.json"
+  },
+  {
+   "id": "gauteng",
+   "name": "Gauteng",
+   "kids": "Municipality",
+   "file": "gauteng.json"
+  },
+  {
+   "id": "kwazulu-natal",
+   "name": "KwaZulu-Natal",
+   "kids": "Municipality",
+   "file": "kwazulu-natal.json"
+  },
+  {
+   "id": "limpopo",
+   "name": "Limpopo",
+   "kids": "Municipality",
+   "file": "limpopo.json"
+  },
+  {
+   "id": "mpumalanga",
+   "name": "Mpumalanga",
+   "kids": "Municipality",
+   "file": "mpumalanga.json"
+  },
+  {
+   "id": "northern-cape",
+   "name": "Northern Cape",
+   "kids": "Municipality",
+   "file": "northern-cape.json"
+  },
+  {
+   "id": "north-west",
+   "name": "North West",
+   "kids": "Municipality",
+   "file": "north-west.json"
+  },
+  {
+   "id": "western-cape",
+   "name": "Western Cape",
+   "kids": "Municipality",
+   "file": "western-cape.json"
+  }
+ ]
+}
