@@ -1,0 +1,29 @@
+{
+ "id": "western-cape",
+ "c": [
+  {
+   "id": "western-cape-city-of-cape-town",
+   "name": "City of Cape Town"
+  },
+  {
+   "id": "western-cape-cape-winelands",
+   "name": "Cape Winelands"
+  },
+  {
+   "id": "western-cape-central-karoo",
+   "name": "Central Karoo"
+  },
+  {
+   "id": "western-cape-garden-route",
+   "name": "Garden Route"
+  },
+  {
+   "id": "western-cape-overberg",
+   "name": "Overberg"
+  },
+  {
+   "id": "western-cape-west-coast",
+   "name": "West Coast"
+  }
+ ]
+}

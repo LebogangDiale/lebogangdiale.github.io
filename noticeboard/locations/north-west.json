@@ -1,0 +1,21 @@
+{
+ "id": "north-west",
+ "c": [
+  {
+   "id": "north-west-bojanala-platinum",
+   "name": "Bojanala Platinum"
+  },
+  {
+   "id": "north-west-dr-kenneth-kaunda",
+   "name": "Dr Kenneth Kaunda"
+  },
+  {
+   "id": "north-west-dr-ruth-segomotsi-mompati",
+   "name": "Dr Ruth Segomotsi Mompati"
+  },
+  {
+   "id": "north-west-ngaka-modiri-molema",
+   "name": "Ngaka Modiri Molema"
+  }
+ ]
+}

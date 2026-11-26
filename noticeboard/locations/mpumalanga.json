@@ -1,0 +1,17 @@
+{
+ "id": "mpumalanga",
+ "c": [
+  {
+   "id": "mpumalanga-ehlanzeni",
+   "name": "Ehlanzeni"
+  },
+  {
+   "id": "mpumalanga-gert-sibande",
+   "name": "Gert Sibande"
+  },
+  {
+   "id": "mpumalanga-nkangala",
+   "name": "Nkangala"
+  }
+ ]
+}

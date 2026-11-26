@@ -1,0 +1,25 @@
+{
+ "id": "free-state",
+ "c": [
+  {
+   "id": "free-state-mangaung",
+   "name": "Mangaung"
+  },
+  {
+   "id": "free-state-fezile-dabi",
+   "name": "Fezile Dabi"
+  },
+  {
+   "id": "free-state-lejweleputswa",
+   "name": "Lejweleputswa"
+  },
+  {
+   "id": "free-state-thabo-mofutsanyana",
+   "name": "Thabo Mofutsanyana"
+  },
+  {
+   "id": "free-state-xhariep",
+   "name": "Xhariep"
+  }
+ ]
+}
