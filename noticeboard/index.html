@@ -22,7 +22,7 @@
     <h1 class="display-4 fw-bold">Your street. Your voice. <span class="accent">One board.</span></h1>
     <p class="lead mb-4">Report issues, find a room, hire local help and share notices with your neighbours.</p>
     <div class="row g-2 align-items-end nn-pick">
-      <div class="col-12 col-sm-7"><label for="site" class="form-label small mb-1">Your site</label><select id="site" class="form-select form-select-lg"></select></div>
+      <div class="col-12 col-sm-7"><label for="locBtn" class="form-label small mb-1">Your area</label><button type="button" id="locBtn" class="btn btn-light btn-lg w-100 text-start text-truncate">All of South Africa</button></div>
       <div class="col-12 col-sm-5"><a href="#board" class="btn btn-light btn-lg w-100 fw-semibold">Browse the board</a></div>
     </div>
   </div>
@@ -75,11 +75,21 @@
   </form>
 </dialog>
 
+<dialog id="locDlg">
+  <div class="d-grid gap-3">
+    <h2 class="h5 fw-bold mb-0">Choose your area</h2>
+    <div id="locPick" class="d-grid gap-2"></div>
+    <p id="locPath" class="small text-secondary mb-0">All of South Africa</p>
+    <button type="button" id="locAdd" class="btn btn-outline-success" hidden>+ Add an area here (admin)</button>
+    <div class="d-flex gap-2 justify-content-end"><button type="button" id="locClear" class="btn btn-outline-secondary">Clear</button><button type="button" id="locDone" class="btn btn-success">Done</button></div>
+  </div>
+</dialog>
+
 <dialog id="dlg">
   <form id="form" class="d-grid gap-3">
     <h2 class="h5 fw-bold mb-0">New post</h2>
     <div><label class="form-label" for="fCat">Category</label><select id="fCat" class="form-select" required></select></div>
-    <div><label class="form-label" for="fSite">Site</label><select id="fSite" class="form-select" required></select></div>
+    <div><span class="form-label d-block">Area</span><div id="fLoc" class="d-grid gap-2"></div></div>
     <div><label class="form-label" for="fTitle">Title</label><input id="fTitle" class="form-control" maxlength="80" required></div>
     <div><label class="form-label" for="fDetails">Details</label><textarea id="fDetails" class="form-control" maxlength="400" rows="4" required></textarea></div>
     <div><label class="form-label" for="fContact">WhatsApp or phone (optional)</label><input id="fContact" class="form-control" type="tel" inputmode="tel" maxlength="20"></div>
