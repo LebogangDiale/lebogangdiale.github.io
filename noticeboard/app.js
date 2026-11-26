@@ -4,6 +4,13 @@ const ADMIN_PIN = "2468"; // DEMO ONLY: anyone can read this in the code. Real s
 const CATS = [["issue", "Issues", "#2F6FB5", "Water, power, roads"], ["business", "Businesses", "#FF7A00", "Plumbers, mechanics"], ["room", "Rooms", "#2F8A12", "Available and wanted"], ["notice", "Notices", "#B5472F", "Meetings and alerts"]];
 const KEY = "neighbournet-demo-v1", PKEY = "neighbournet-posts-v2";
 const $ = s => document.querySelector(s);
+const NEED = ["locBtn", "locDlg", "locPick", "locPath", "locAdd", "locClear", "locDone", "fLoc", "fCat", "fTitle", "fDetails", "fContact", "cancel", "navUser", "stats", "list", "board", "feedTitle", "top", "adminBtn", "adBtn", "authDlg", "authForm", "authTitle", "authGo", "authCancel", "tabIn", "tabNew", "nameRow", "aName", "aPhone", "aPin", "aErr", "form", "dlg", "toast"];
+const missing = NEED.filter(id => !document.getElementById(id));
+if (missing.length) {
+  const m = document.createElement("div"); m.className = "alert alert-danger m-3";
+  m.textContent = "NeighbourNet: your index.html is not the newest version. Missing parts: " + missing.join(", ") + ". Replace index.html with the latest one.";
+  document.body.prepend(m); throw new Error("Missing elements: " + missing.join(", "));
+}
 const day = 864e5, t0 = Date.now();
 const K = ["gauteng", "gauteng-west-rand", "gauteng-mogale", "gauteng-kagiso"];
 const seed = [
@@ -182,5 +189,5 @@ $("#adminBtn").onclick = () => {
   if (pin === ADMIN_PIN) { admin = true; render(); toast("Admin mode on"); } else toast("Wrong PIN");
 };
 fetch("locations/index.json").then(r => r.json()).then(d => { TREE = d.tree; index(TREE, []); applyExtras(); return loc[0] ? ensureProvince(loc[0]) : 0; }).then(() => render())
-  .catch(() => { $("#list").textContent = "Could not load the list of areas. Open this page from your website, not as a file."; });
+  .catch(() => { $("#list").textContent = "Could not load locations/index.json. Check that the locations folder is inside the noticeboard folder with the same file names, and that you opened this page from your website, not as a file."; });
 render();
