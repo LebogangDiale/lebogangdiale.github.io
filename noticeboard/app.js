@@ -41,23 +41,20 @@ function opts(sel, list) { sel.textContent = ""; list.forEach(v => sel.append(ne
 // ----- locations -----
 function index(nodes, path) { nodes.forEach(n => { n.path = [...path, n.id]; MAP[n.id] = n; if (n.c) index(n.c, n.path); }); }
 function applyExtras() {
-  extra.forEach(x => { const p = MAP[x.parent]; if (!p || MAP[x.id]) return; p.kids = p.kids || "Area"; const n = { id: x.id, name: x.name }; (p.c = p.c || []).push(n); index([n], p.path); });
+  extra.forEach(x => { const p = MAP[x.parent]; if (!p || MAP[x.id] || (p.dir && !p.loaded)) return; p.kids = p.kids || "Area"; const n = { id: x.id, name: x.name }; (p.c = p.c || []).push(n); index([n], p.path); });
 }
 const loading = {};
-function ensureProvince(id) {
-  const n = MAP[id]; if (!n || n.loaded) return Promise.resolve(!!n);
-  return loading[id] || (loading[id] = fetch("locations/" + n.file).then(r => { if (!r.ok) throw 0; return r.json(); })
-    .then(d => { n.c = d.c; n.loaded = true; index(n.c, n.path); applyExtras(); delete loading[id]; return true; })
-    .catch(() => { delete loading[id]; return false; }));
+function ensureNode(id) {
+  const n = MAP[id]; if (!n || !n.dir || n.loaded) return Promise.resolve();
+  return loading[id] || (loading[id] = fetch(n.base + "index.json").then(r => { if (r.status === 404) return { c: [] }; if (!r.ok) throw 0; return r.json(); })
+    .then(d => { n.c = d.c || []; n.c.forEach(k => { if (k.dir) k.base = n.base + k.dir; }); n.loaded = true; index(n.c, n.path); applyExtras(); })
+    .catch(() => { n.c = []; n.loaded = true; n.failed = true; toast("Could not load more places for " + n.name + "."); })
+    .then(() => { delete loading[id]; }));
 }
 function names(path, n) { return path.slice(-n).map(id => MAP[id] && MAP[id].name).filter(Boolean).join(", "); }
 function picker(box, path, onChange) {
-  const first = path[0] && MAP[path[0]];
-  if (first && !first.loaded) {
-    box.textContent = "Loading...";
-    ensureProvince(path[0]).then(ok => { if (!ok) { toast("Could not load that province. Check your connection."); path = []; onChange([]); } picker(box, path, onChange); });
-    return;
-  }
+  const todo = path.map(id => MAP[id]).find(n => n && n.dir && !n.loaded);
+  if (todo) { box.textContent = "Loading..."; ensureNode(todo.id).then(() => picker(box, path, onChange)); return; }
   box.textContent = "";
   let list = TREE, label = "Province", i = 0;
   while (list && list.length) {
@@ -188,6 +185,9 @@ $("#adminBtn").onclick = () => {
   const pin = prompt("Admin PIN"); if (pin === null) return;
   if (pin === ADMIN_PIN) { admin = true; render(); toast("Admin mode on"); } else toast("Wrong PIN");
 };
-fetch("locations/index.json").then(r => r.json()).then(d => { TREE = d.tree; index(TREE, []); applyExtras(); return loc[0] ? ensureProvince(loc[0]) : 0; }).then(() => render())
-  .catch(() => { $("#list").textContent = "Could not load locations/index.json. Check that the locations folder is inside the noticeboard folder with the same file names, and that you opened this page from your website, not as a file."; });
+fetch("locations/index.json").then(r => r.json()).then(async d => {
+  TREE = d.tree; TREE.forEach(k => { if (k.dir) k.base = "locations/" + k.dir; }); index(TREE, []); applyExtras();
+  for (const id of loc) { if (!MAP[id]) break; await ensureNode(id); }
+  render();
+}).catch(() => { $("#list").textContent = "Could not load locations/index.json. Check that the locations folder is inside the noticeboard folder with the same file names, and that you opened this page from your website, not as a file."; });
 render();
