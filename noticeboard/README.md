@@ -49,3 +49,10 @@ locations/
 - The page only loads these files when opened from the web (GitHub Pages), not by double-clicking `index.html`.
 - In admin mode, "Add an area here" saves new areas in this browser only (demo). With Firebase they will be shared.
 - Posts store the full chosen path, so picking "Gauteng" shows everything in Gauteng, and picking "Kagiso" shows only Kagiso.
+
+## Share preview, SEO and installing
+- In `index.html`, replace `https://YOUR-USERNAME.github.io/YOUR-REPO/noticeboard/` in the three `og:url`, `og:image` lines with your real address. Without this, WhatsApp will not show the preview picture (`images/og-share.jpg`).
+- Test a link by pasting it into a WhatsApp chat to yourself. WhatsApp remembers old previews for a while, so test after you have set the final address.
+- `manifest.webmanifest` and the icons in `images/` let people use "Add to Home Screen" and get an app-style icon.
+- When you buy your domain: add a `robots.txt` and `sitemap.xml` at the top of the site, and register the site in Google Search Console (free).
+- Dark mode: the button is in the footer. The choice is remembered on that device.
