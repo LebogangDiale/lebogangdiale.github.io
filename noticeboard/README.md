@@ -15,3 +15,12 @@ Static demo: no server, no Firebase yet. Posts are saved in each visitor's own b
 Replace the load/save functions in `app.js` with Firestore calls so everyone shares the same posts. Do that in a NEW Firebase project, not the gift-draw one.
 
 Note: the page loads Bootstrap from a CDN (cdn.jsdelivr.net), so it needs an internet connection.
+- `logo-mark.svg`: the logo icon used in the top bar and as the browser tab icon. Keep it in the same folder as `index.html`.
+
+## Photos
+Files in `images/` came from Unsplash (free licence). Keep the Unsplash link and photographer name for each one here:
+- `hero-street.webp`: street scene (banner). Source link: [add]
+- `water.webp`: tap. Source link: [add]
+- `power.webp`: worker on a pole. Source link: [add]
+- `business.webp`: apples at a stall (cropped to remove faces). Source link: [add]
+Do not call the street photo "Kagiso" unless it really is.
