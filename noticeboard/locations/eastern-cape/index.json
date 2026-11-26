@@ -1,1 +1,52 @@
-
+{
+ "c": [
+  {
+   "id": "eastern-cape-buffalo-city",
+   "name": "Buffalo City",
+   "kids": "Township or suburb",
+   "dir": "buffalo-city/"
+  },
+  {
+   "id": "eastern-cape-nelson-mandela-bay",
+   "name": "Nelson Mandela Bay",
+   "kids": "Township or suburb",
+   "dir": "nelson-mandela-bay/"
+  },
+  {
+   "id": "eastern-cape-alfred-nzo",
+   "name": "Alfred Nzo",
+   "kids": "Local municipality",
+   "dir": "alfred-nzo/"
+  },
+  {
+   "id": "eastern-cape-amathole",
+   "name": "Amathole",
+   "kids": "Local municipality",
+   "dir": "amathole/"
+  },
+  {
+   "id": "eastern-cape-chris-hani",
+   "name": "Chris Hani",
+   "kids": "Local municipality",
+   "dir": "chris-hani/"
+  },
+  {
+   "id": "eastern-cape-joe-gqabi",
+   "name": "Joe Gqabi",
+   "kids": "Local municipality",
+   "dir": "joe-gqabi/"
+  },
+  {
+   "id": "eastern-cape-o-r-tambo",
+   "name": "O.R. Tambo",
+   "kids": "Local municipality",
+   "dir": "o-r-tambo/"
+  },
+  {
+   "id": "eastern-cape-sarah-baartman",
+   "name": "Sarah Baartman",
+   "kids": "Local municipality",
+   "dir": "sarah-baartman/"
+  }
+ ]
+}
