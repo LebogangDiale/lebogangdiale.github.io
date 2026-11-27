@@ -1,1 +1,40 @@
-
+{
+ "c": [
+  {
+   "id": "western-cape-city-of-cape-town",
+   "name": "City of Cape Town",
+   "kids": "Township or suburb",
+   "dir": "city-of-cape-town/"
+  },
+  {
+   "id": "western-cape-cape-winelands",
+   "name": "Cape Winelands",
+   "kids": "Local municipality",
+   "dir": "cape-winelands/"
+  },
+  {
+   "id": "western-cape-central-karoo",
+   "name": "Central Karoo",
+   "kids": "Local municipality",
+   "dir": "central-karoo/"
+  },
+  {
+   "id": "western-cape-garden-route",
+   "name": "Garden Route",
+   "kids": "Local municipality",
+   "dir": "garden-route/"
+  },
+  {
+   "id": "western-cape-overberg",
+   "name": "Overberg",
+   "kids": "Local municipality",
+   "dir": "overberg/"
+  },
+  {
+   "id": "western-cape-west-coast",
+   "name": "West Coast",
+   "kids": "Local municipality",
+   "dir": "west-coast/"
+  }
+ ]
+}
