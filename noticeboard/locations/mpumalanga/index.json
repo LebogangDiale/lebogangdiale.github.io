@@ -1,1 +1,22 @@
-
+{
+ "c": [
+  {
+   "id": "mpumalanga-ehlanzeni",
+   "name": "Ehlanzeni",
+   "kids": "Local municipality",
+   "dir": "ehlanzeni/"
+  },
+  {
+   "id": "mpumalanga-gert-sibande",
+   "name": "Gert Sibande",
+   "kids": "Local municipality",
+   "dir": "gert-sibande/"
+  },
+  {
+   "id": "mpumalanga-nkangala",
+   "name": "Nkangala",
+   "kids": "Local municipality",
+   "dir": "nkangala/"
+  }
+ ]
+}
