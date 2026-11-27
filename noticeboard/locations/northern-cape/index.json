@@ -1,1 +1,34 @@
-
+{
+ "c": [
+  {
+   "id": "northern-cape-frances-baard",
+   "name": "Frances Baard",
+   "kids": "Local municipality",
+   "dir": "frances-baard/"
+  },
+  {
+   "id": "northern-cape-john-taolo-gaetsewe",
+   "name": "John Taolo Gaetsewe",
+   "kids": "Local municipality",
+   "dir": "john-taolo-gaetsewe/"
+  },
+  {
+   "id": "northern-cape-namakwa",
+   "name": "Namakwa",
+   "kids": "Local municipality",
+   "dir": "namakwa/"
+  },
+  {
+   "id": "northern-cape-pixley-ka-seme",
+   "name": "Pixley ka Seme",
+   "kids": "Local municipality",
+   "dir": "pixley-ka-seme/"
+  },
+  {
+   "id": "northern-cape-z-f-mgcawu",
+   "name": "Z.F. Mgcawu",
+   "kids": "Local municipality",
+   "dir": "z-f-mgcawu/"
+  }
+ ]
+}
