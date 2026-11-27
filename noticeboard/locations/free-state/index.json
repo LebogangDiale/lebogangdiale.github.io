@@ -1,1 +1,34 @@
-
+{
+ "c": [
+  {
+   "id": "free-state-mangaung",
+   "name": "Mangaung",
+   "kids": "Township or suburb",
+   "dir": "mangaung/"
+  },
+  {
+   "id": "free-state-fezile-dabi",
+   "name": "Fezile Dabi",
+   "kids": "Local municipality",
+   "dir": "fezile-dabi/"
+  },
+  {
+   "id": "free-state-lejweleputswa",
+   "name": "Lejweleputswa",
+   "kids": "Local municipality",
+   "dir": "lejweleputswa/"
+  },
+  {
+   "id": "free-state-thabo-mofutsanyana",
+   "name": "Thabo Mofutsanyana",
+   "kids": "Local municipality",
+   "dir": "thabo-mofutsanyana/"
+  },
+  {
+   "id": "free-state-xhariep",
+   "name": "Xhariep",
+   "kids": "Local municipality",
+   "dir": "xhariep/"
+  }
+ ]
+}
