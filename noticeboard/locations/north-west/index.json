@@ -1,1 +1,28 @@
-
+{
+ "c": [
+  {
+   "id": "north-west-bojanala-platinum",
+   "name": "Bojanala Platinum",
+   "kids": "Local municipality",
+   "dir": "bojanala-platinum/"
+  },
+  {
+   "id": "north-west-dr-kenneth-kaunda",
+   "name": "Dr Kenneth Kaunda",
+   "kids": "Local municipality",
+   "dir": "dr-kenneth-kaunda/"
+  },
+  {
+   "id": "north-west-dr-ruth-segomotsi-mompati",
+   "name": "Dr Ruth Segomotsi Mompati",
+   "kids": "Local municipality",
+   "dir": "dr-ruth-segomotsi-mompati/"
+  },
+  {
+   "id": "north-west-ngaka-modiri-molema",
+   "name": "Ngaka Modiri Molema",
+   "kids": "Local municipality",
+   "dir": "ngaka-modiri-molema/"
+  }
+ ]
+}
