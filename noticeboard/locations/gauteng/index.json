@@ -1,1 +1,22 @@
-
+{
+ "c": [
+  {
+   "id": "gauteng-emfuleni",
+   "name": "Emfuleni",
+   "kids": "Town or township",
+   "dir": "emfuleni/"
+  },
+  {
+   "id": "gauteng-lesedi",
+   "name": "Lesedi",
+   "kids": "Town or township",
+   "dir": "lesedi/"
+  },
+  {
+   "id": "gauteng-midvaal",
+   "name": "Midvaal",
+   "kids": "Town or township",
+   "dir": "midvaal/"
+  }
+ ]
+}
