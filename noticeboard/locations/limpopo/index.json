@@ -1,1 +1,34 @@
-
+{
+ "c": [
+  {
+   "id": "limpopo-capricorn",
+   "name": "Capricorn",
+   "kids": "Local municipality",
+   "dir": "capricorn/"
+  },
+  {
+   "id": "limpopo-mopani",
+   "name": "Mopani",
+   "kids": "Local municipality",
+   "dir": "mopani/"
+  },
+  {
+   "id": "limpopo-sekhukhune",
+   "name": "Sekhukhune",
+   "kids": "Local municipality",
+   "dir": "sekhukhune/"
+  },
+  {
+   "id": "limpopo-vhembe",
+   "name": "Vhembe",
+   "kids": "Local municipality",
+   "dir": "vhembe/"
+  },
+  {
+   "id": "limpopo-waterberg",
+   "name": "Waterberg",
+   "kids": "Local municipality",
+   "dir": "waterberg/"
+  }
+ ]
+}
